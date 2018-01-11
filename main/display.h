@@ -24,6 +24,11 @@ class Display
      */
     void reset();
 
+    /**
+     * Standard announcement
+     */
+    void announce(String message, int seconds);
+
   private:
     
 };
