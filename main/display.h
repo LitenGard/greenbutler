@@ -1,3 +1,7 @@
+/*
+ * display.h - library for GreenButler specific display control
+ * Copyright Marlon van der Linde <marlon250f@gmail.com> 2018
+ */
 #include <LiquidCrystal.h>
 
 #ifndef display_h
