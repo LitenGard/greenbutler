@@ -4,8 +4,8 @@
 */
 #include <LiquidCrystal.h>
 
-#ifndef display_h
-#define display_h
+#ifndef Display_h
+#define Display_h
 
 class Display
 {
