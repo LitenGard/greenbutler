@@ -1,9 +1,9 @@
 /*
- * Relay.cpp - library for GreenButler specific relay control
- * Copyright Marlon van der Linde <marlon250f@gmail.com> 2018
- */
- #include "Relay.h"
- #include "Arduino.h"
+   Relay.cpp - library for GreenButler specific relay control
+   Copyright Marlon van der Linde <marlon250f@gmail.com> 2018
+*/
+#include "Relay.h"
+#include "Arduino.h"
 
 Relay::Relay()
 {
@@ -13,68 +13,130 @@ Relay::Relay()
 void Relay::begin()
 {
   // Initialise the relay pins for output.
-  pinMode(PIN_RELAY1, OUTPUT);       
-  pinMode(PIN_RELAY2, OUTPUT);
-  pinMode(PIN_RELAY3, OUTPUT);
-  pinMode(PIN_RELAY4, OUTPUT);
+  pinMode(PIN_RELAY1_SOLENOID, OUTPUT);
+  pinMode(PIN_RELAY2_FAN, OUTPUT);
+  pinMode(PIN_RELAY3_PUMP_A, OUTPUT);
+  pinMode(PIN_RELAY4_PUMP_B, OUTPUT);
 }
 
-void Relay::startPumpA()
+int Relay::startPumpA()
 {
-  
+
 }
 
-void Relay::startPumpB()
+int Relay::startPumpB()
 {
-  
+
 }
 
-void Relay::startFanA()
+int Relay::startFan()
 {
-  
+
 }
 
-void Relay::openSolenoid() {
-  
+int Relay::openSolenoid() {
+
 }
 
-void Relay::stopPumpA()
+int Relay::stopPumpA()
 {
-  
+  int state = 0;
+
+  if (this->statePumpA || (digitalRead(PIN_RELAY3_PUMP_A) == HIGH)) {
+    state = 1;
+  } else {
+    state = -1;
+  }
+
+  this->statePumpA = false;
+  digitalWrite(PIN_RELAY3_PUMP_A, LOW);
+  return state;
 }
 
-void Relay::stopPumpB()
+int Relay::stopPumpB()
 {
-  
+  int state = 0;
+
+  if (this->statePumpB || (digitalRead(PIN_RELAY4_PUMP_B) == HIGH)) {
+    state = 1;
+  } else {
+    state = -1;
+  }
+
+  this->statePumpB = false;
+  digitalWrite(PIN_RELAY4_PUMP_B, LOW);
+  return state;
 }
 
-void Relay::stopFanA()
+int Relay::stopFan()
 {
-  
+  int state = 0;
+
+  if (this->stateFan || (digitalRead(PIN_RELAY2_FAN) == HIGH)) {
+    state = 1;
+  } else {
+    state = -1;
+  }
+
+  this->stateFan = false;
+  digitalWrite(PIN_RELAY2_FAN, LOW);
+  return state;
 }
 
-void Relay::closeSolenoid()
+/**
+   Close(deactivate) the solenoid.
+   If the state claims it is already closed, -1 is returned, and an attempt to close it is made anyway and the state updated.
+   Normally, in good cases, 1 is returned.
+   @returns int
+*/
+int Relay::closeSolenoid()
 {
-  
+  int state = 0;
+
+  if (this->stateSolenoid || (digitalRead(PIN_RELAY1_SOLENOID) == HIGH)) {
+    state = 1;
+  } else {
+    state = -1;
+  }
+
+  this->stateSolenoid = false;
+  digitalWrite(PIN_RELAY1_SOLENOID, LOW);
+  return state;
 }
 
-int Relay::statusPumpA()
+bool Relay::statusPumpA()
 {
-  
+  this->statePumpA = false;
+  if (digitalRead(PIN_RELAY3_PUMP_A) == HIGH) {
+    this->statePumpA = true;
+  }
+  return this->statePumpA;
 }
 
-int Relay::statusPumpB()
+bool Relay::statusPumpB()
 {
-  
+  this->statePumpB = false;
+  if (digitalRead(PIN_RELAY4_PUMP_B) == HIGH) {
+    this->statePumpB = true;
+  }
+  return this->statePumpB;
 }
 
-int Relay::statusFanA()
+bool Relay::statusFan()
 {
-  
+  this->stateFan = false;
+  if (digitalRead(PIN_RELAY2_FAN) == HIGH) {
+    this->stateFan = true;
+  }
+  return this->stateFan;
 }
 
-int Relay::statusSolenoid()
+bool Relay::statusSolenoid()
 {
-  
+  this->stateSolenoid = false;
+  if (digitalRead(PIN_RELAY1_SOLENOID) == HIGH) {
+    this->stateSolenoid = true;
+  }
+  return this->stateSolenoid;
 }
 
