@@ -27,7 +27,7 @@ void Relay::startPumpA()
 
 void Relay::startPumpB()
 {
-  digitalWrite(PIN_RELAY3_PUMP_B, HIGH);
+  digitalWrite(PIN_RELAY4_PUMP_B, HIGH);
   this->statePumpB = true;
 }
 
@@ -51,7 +51,7 @@ void Relay::stopPumpA()
 
 void Relay::stopPumpB()
 {
-  digitalWrite(PIN_RELAY3_PUMP_B, LOW);
+  digitalWrite(PIN_RELAY4_PUMP_B, LOW);
   this->statePumpB = false;
 }
 
@@ -75,7 +75,7 @@ bool Relay::statusPumpA()
 
 bool Relay::statusPumpB()
 {
-  this->statePumpB = digitalRead(PIN_RELAY3_PUMP_B);
+  this->statePumpB = digitalRead(PIN_RELAY4_PUMP_B);
   return this->statePumpB;
 }
 
