@@ -5,9 +5,11 @@
 #include "parameters.h"
 #include "Display.h"
 #include "Relay.h"
+#include "Sensors.h"
 
 Display display;
 Relay relay;
+Sensors sensors;
 
 volatile uint16_t timercount;
 int updateTimers = 0;
@@ -18,6 +20,7 @@ void setup() {
   // In the beginnining...
   relay.begin();
   display.begin();
+  sensors.begin();
 
   delay(500);
   display.runScreen();
@@ -95,6 +98,7 @@ void task_5S()
 void task_10S()
 {
   Serial.println(F("10S fired"));
+  sensors.getTemperature();
 }
 
 // This function is called every minute
