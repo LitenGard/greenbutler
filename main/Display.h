@@ -34,6 +34,21 @@ class Display
     */
     void mute();
 
+    /**
+     * Run screen template.
+     * This is the layout of the run screen. Also see updateStatuses() which adds values to this screen.
+     */
+    void runScreen();
+
+    /**
+     * Updates the runScreen() layout with the given values.
+     * @param bool pumpA Boolean indicator whether pump A is running or not
+     * @param bool pumpB Boolean indicator whether pump B is running or not
+     * @param bool fan Boolean indicator whether the fan is running or not
+     * @param bool solenoid Boolean indicator whether the solenoid is open or not
+     */
+    void updateStatuses(bool pumpA, bool pumpB, bool fan, bool solenoid);
+
   private:
     int muted = 0;
 

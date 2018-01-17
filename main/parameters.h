@@ -7,3 +7,8 @@
 
 #define TIMER_READ 5000
 
+#define NAME_PUMP_A "P1"
+#define NAME_PUMP_B "p2"
+#define NAME_FAN "Fan"
+#define NAME_SOLENOID "Flow"
+

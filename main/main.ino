@@ -10,9 +10,13 @@ void setup() {
   display.begin();
   delay(500);
   display.reset();
-  display.announce("relays init ", 1);
   relay.begin();
   display.reset();
+  display.runScreen();
+  
+  delay(600);
+  display.updateStatuses(true,false,false,false);
+
 }
 
 void loop() {
