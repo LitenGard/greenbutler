@@ -19,11 +19,11 @@ void Display::begin() {
   delay(500);
   lcd.home();
   lcd.print(SYS_GREETING);
-  delay(1500);
+  delay(500);
   lcd.clear();
   lcd.setCursor(0, 1);
   lcd.print(SYS_NAME_VERSION);
-  delay(1500);
+  delay(500);
 }
 
 void Display::reset() {
@@ -40,11 +40,36 @@ void Display::mute() {
 }
 
 void Display::runScreen() {
-  lcd.setCursor(0,1);
+  lcd.setCursor(0,0);
   lcd.print(NAME_PUMP_A);
-  lcd.print(":");
-  lcd.setCursor(0,2);
+  
+  lcd.setCursor(0,1);
   lcd.print(NAME_PUMP_B);
+
+  lcd.setCursor(7,0);
+  lcd.print(NAME_FAN);
+
+  lcd.setCursor(7,1);
+  lcd.print(NAME_SOLENOID);  
+}
+
+void Display::updateStatuses(bool pumpA, bool pumpB, bool fan, bool solenoid) {
+
+  String pumpAVal = (pumpA == true) ? "on" : "off";
+  String pumpBVal = (pumpB == true) ? "on" : "off";
+  String fanVal = (fan == true) ? "on" : "off";
+  String solenoidVal = (solenoid == true) ? "open" : "clsd";
+  
+  lcd.setCursor(3, 0);
+  lcd.print(pumpAVal);
+  lcd.setCursor(3, 1);
+  lcd.print(pumpBVal);
+
+  lcd.setCursor(12, 0);
+  lcd.print(fanVal);
+
+  lcd.setCursor(12, 1);
+  lcd.print(solenoidVal);
 }
 
 void Display::announce(String message, int seconds) {
