@@ -19,124 +19,75 @@ void Relay::begin()
   pinMode(PIN_RELAY4_PUMP_B, OUTPUT);
 }
 
-int Relay::startPumpA()
+void Relay::startPumpA()
 {
-
+  digitalWrite(PIN_RELAY3_PUMP_A, HIGH);
+  this->statePumpA = true;
 }
 
-int Relay::startPumpB()
+void Relay::startPumpB()
 {
-
+  digitalWrite(PIN_RELAY4_PUMP_B, HIGH);
+  this->statePumpB = true;
 }
 
-int Relay::startFan()
+void Relay::startFan()
 {
-
+  digitalWrite(PIN_RELAY2_FAN, HIGH);
+  this->stateFan = true;
 }
 
-int Relay::openSolenoid() {
-
+void Relay::openSolenoid()
+{
+  digitalWrite(PIN_RELAY1_SOLENOID, HIGH);
+  this->stateSolenoid = true;
 }
 
-int Relay::stopPumpA()
+void Relay::stopPumpA()
 {
-  int state = 0;
-
-  if (this->statePumpA || (digitalRead(PIN_RELAY3_PUMP_A) == HIGH)) {
-    state = 1;
-  } else {
-    state = -1;
-  }
-
-  this->statePumpA = false;
   digitalWrite(PIN_RELAY3_PUMP_A, LOW);
-  return state;
+  this->statePumpA = false;
 }
 
-int Relay::stopPumpB()
+void Relay::stopPumpB()
 {
-  int state = 0;
-
-  if (this->statePumpB || (digitalRead(PIN_RELAY4_PUMP_B) == HIGH)) {
-    state = 1;
-  } else {
-    state = -1;
-  }
-
-  this->statePumpB = false;
   digitalWrite(PIN_RELAY4_PUMP_B, LOW);
-  return state;
+  this->statePumpB = false;
 }
 
-int Relay::stopFan()
+void Relay::stopFan()
 {
-  int state = 0;
-
-  if (this->stateFan || (digitalRead(PIN_RELAY2_FAN) == HIGH)) {
-    state = 1;
-  } else {
-    state = -1;
-  }
-
-  this->stateFan = false;
   digitalWrite(PIN_RELAY2_FAN, LOW);
-  return state;
+  this->stateFan = false;
 }
 
-/**
-   Close(deactivate) the solenoid.
-   If the state claims it is already closed, -1 is returned, and an attempt to close it is made anyway and the state updated.
-   Normally, in good cases, 1 is returned.
-   @returns int
-*/
-int Relay::closeSolenoid()
+void Relay::closeSolenoid()
 {
-  int state = 0;
-
-  if (this->stateSolenoid || (digitalRead(PIN_RELAY1_SOLENOID) == HIGH)) {
-    state = 1;
-  } else {
-    state = -1;
-  }
-
-  this->stateSolenoid = false;
   digitalWrite(PIN_RELAY1_SOLENOID, LOW);
-  return state;
+  this->stateSolenoid = false;
 }
 
 bool Relay::statusPumpA()
 {
-  this->statePumpA = false;
-  if (digitalRead(PIN_RELAY3_PUMP_A) == HIGH) {
-    this->statePumpA = true;
-  }
+  this->statePumpA = digitalRead(PIN_RELAY3_PUMP_A);
   return this->statePumpA;
 }
 
 bool Relay::statusPumpB()
 {
-  this->statePumpB = false;
-  if (digitalRead(PIN_RELAY4_PUMP_B) == HIGH) {
-    this->statePumpB = true;
-  }
+  this->statePumpB = digitalRead(PIN_RELAY4_PUMP_B);
   return this->statePumpB;
 }
 
 bool Relay::statusFan()
 {
-  this->stateFan = false;
-  if (digitalRead(PIN_RELAY2_FAN) == HIGH) {
-    this->stateFan = true;
-  }
+  this->stateFan = digitalRead(PIN_RELAY2_FAN);
   return this->stateFan;
 }
 
 bool Relay::statusSolenoid()
 {
-  this->stateSolenoid = false;
-  if (digitalRead(PIN_RELAY1_SOLENOID) == HIGH) {
-    this->stateSolenoid = true;
-  }
+  this->stateSolenoid = digitalRead(PIN_RELAY1_SOLENOID);
   return this->stateSolenoid;
 }
 
