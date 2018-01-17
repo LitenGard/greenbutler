@@ -40,6 +40,7 @@ void Display::mute() {
 }
 
 void Display::runScreen() {
+  lcd.clear();
   lcd.setCursor(0,0);
   lcd.print(NAME_PUMP_A);
   
@@ -54,11 +55,12 @@ void Display::runScreen() {
 }
 
 void Display::updateStatuses(bool pumpA, bool pumpB, bool fan, bool solenoid) {
-
   String pumpAVal = (pumpA == true) ? "on" : "off";
   String pumpBVal = (pumpB == true) ? "on" : "off";
   String fanVal = (fan == true) ? "on" : "off";
   String solenoidVal = (solenoid == true) ? "open" : "clsd";
+  
+  runScreen();
   
   lcd.setCursor(3, 0);
   lcd.print(pumpAVal);

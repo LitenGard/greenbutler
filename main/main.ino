@@ -14,16 +14,13 @@ int updateTimers = 0;
 
 void setup() {
   Serial.begin(9600);
-  
+
+  relay.begin();
   display.begin();
+  
   delay(500);
   display.reset();
-  relay.begin();
-  display.reset();
   display.runScreen();
-  
-  delay(600);
-  display.updateStatuses(true,false,false,false);
 
   wdt_enable(WDTO_8S);  // watchdog threshold to 8 secs
   configureTimers();
@@ -74,23 +71,25 @@ ISR(TIMER1_COMPA_vect)
 
 void checkScheduler()
 {
-  if ((timercount % COUNTER_2S) == 0) task_2S();
   if ((timercount % COUNTER_5S) == 0) task_5S();
+  if ((timercount % COUNTER_10S) == 0) task_10S();
   if ((timercount % COUNTER_1M) == 0) task_1M();
   if ((timercount % COUNTER_5M) == 0) task_5M();
   if ((timercount % COUNTER_15M) == 0) task_15M();     
 }
 
-// Every 2 Seconds
-void task_2S()
+// This function is called every 10 Seconds
+void task_10S()
 {
-  Serial.println("2S fired");
+  Serial.println("10S fired");
+  display.updateStatuses(false,true,true,true);
 }
 
 // This function is called every 5 seconds
 void task_5S()
 {
   Serial.println("5S fired");
+  display.updateStatuses(true,false,false,false);
 }
 
 // This function is called every minute
