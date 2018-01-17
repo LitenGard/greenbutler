@@ -4,6 +4,7 @@
 */
 #include "Relay.h"
 #include "Arduino.h"
+#include "parameters.h"
 
 Relay::Relay()
 {

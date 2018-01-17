@@ -11,7 +11,7 @@
    lcd parameters:
    rs, enable, d4, d5, d6, d7
 */
-Display::Display() : lcd(2, 3, 4, 5, 6, 7) {
+Display::Display() : lcd(PIN_LCD_RS, PIN_LCD_ENABLE, PIN_LCD_D4, PIN_LCD_D5, PIN_LCD_D6, PIN_LCD_D7) {
   lcd.begin(LCD_CHARS, LCD_LINES);
 }
 
@@ -19,11 +19,10 @@ void Display::begin() {
   delay(500);
   lcd.home();
   lcd.print(SYS_GREETING);
-  delay(500);
-  lcd.clear();
+  delay(800);
   lcd.setCursor(0, 1);
   lcd.print(SYS_NAME_VERSION);
-  delay(500);
+  delay(600);
 }
 
 void Display::reset() {
