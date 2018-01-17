@@ -13,6 +13,8 @@ void setup() {
   display.announce("relays init ", 1);
   relay.begin();
   display.reset();
+  display.runScreen();
+
 }
 
 void loop() {

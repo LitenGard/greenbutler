@@ -39,6 +39,14 @@ void Display::mute() {
   muted = !muted;
 }
 
+void Display::runScreen() {
+  lcd.setCursor(0,1);
+  lcd.print(NAME_PUMP_A);
+  lcd.print(":");
+  lcd.setCursor(0,2);
+  lcd.print(NAME_PUMP_B);
+}
+
 void Display::announce(String message, int seconds) {
   // todo - announce on same location/line everytime
   lcd.blink();

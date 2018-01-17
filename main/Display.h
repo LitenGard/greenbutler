@@ -34,6 +34,11 @@ class Display
     */
     void mute();
 
+    /**
+     * Run screen template
+     */
+    void runScreen();
+
   private:
     int muted = 0;
 
