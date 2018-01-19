@@ -18,6 +18,13 @@ void Relay::begin()
   pinMode(PIN_RELAY2_FAN, OUTPUT);
   pinMode(PIN_RELAY3_PUMP_A, OUTPUT);
   pinMode(PIN_RELAY4_PUMP_B, OUTPUT);
+
+  // what is the relays default off and on? confused
+  //  stopPumpA();
+  //  stopPumpB();
+  //  stopFan();
+  //  closeSolenoid();
+ 
 }
 
 void Relay::startPumpA()

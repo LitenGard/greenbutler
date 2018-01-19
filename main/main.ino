@@ -92,11 +92,26 @@ void checkScheduler()
 void task_5S()
 {
   Serial.println(F("5S fired"));
+  
+  if (relay.statusPumpA()) {
+    relay.stopPumpA();
+  } else {
+    relay.startPumpA();
+  }
+
+  display.updateStatuses(relay.statusPumpA(), relay.statusPumpB(), relay.statusFan(), relay.statusSolenoid());
+  
 }
 
 // This function is called every 10 Seconds
 void task_10S()
 {
+  if (relay.statusSolenoid()) {
+    relay.closeSolenoid();
+  } else {
+    relay.openSolenoid();
+  }
+
   Serial.println(F("10S fired"));
   sensors.getTemperature();
 }
