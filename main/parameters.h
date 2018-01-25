@@ -1,5 +1,5 @@
 
-#define SYS_NAME_VERSION "GreenButler v0.2"
+#define SYS_NAME_VERSION "GreenButler v0.3"
 #define SYS_GREETING "Hello Karoo!"
 
 #define LCD_CHARS 16
@@ -25,9 +25,8 @@
 #define PIN_LCD_D7 7
 
 /* Timer Constants & Variables */
-const char COUNTER_5S = 5;
+const char COUNTER_1S = 1;
 const char COUNTER_10S = 10;
 const char COUNTER_1M = 60;
-const int COUNTER_5M = 300;
-const int COUNTER_15M = 900;
+const char COUNTER_15M = 900;
 

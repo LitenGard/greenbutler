@@ -15,15 +15,15 @@ void Sensors::begin() {
     // todo
 }
 
-int Sensors::getTemperature() {
+float Sensors::getTemperature() {
   return 666;
 }
 
-int Sensors::getHumidity() {
+float Sensors::getHumidity() {
   return 777;
 }
 
-int Sensors::getSoilMoisture() {
+float Sensors::getSoilMoisture() {
     return 888;
 }
 

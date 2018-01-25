@@ -38,7 +38,13 @@ void Display::mute() {
   muted = !muted;
 }
 
-void Display::runScreen() {
+void Display::updateStatuses(bool pumpA, bool pumpB, bool fan, bool solenoid) {
+  String pumpAVal = (pumpA == true) ? "on" : "off";
+  String pumpBVal = (pumpB == true) ? "on" : "off";
+  String fanVal = (fan == true) ? "on" : "off";
+  String solenoidVal = (solenoid == true) ? "open" : "clsd";
+
+  // Set label positions, print labels.
   lcd.clear();
   lcd.setCursor(0,0);
   lcd.print(NAME_PUMP_A);
@@ -51,16 +57,8 @@ void Display::runScreen() {
 
   lcd.setCursor(7,1);
   lcd.print(NAME_SOLENOID);  
-}
 
-void Display::updateStatuses(bool pumpA, bool pumpB, bool fan, bool solenoid) {
-  String pumpAVal = (pumpA == true) ? "on" : "off";
-  String pumpBVal = (pumpB == true) ? "on" : "off";
-  String fanVal = (fan == true) ? "on" : "off";
-  String solenoidVal = (solenoid == true) ? "open" : "clsd";
-  
-  runScreen();
-  
+  // set value positions and print values
   lcd.setCursor(3, 0);
   lcd.print(pumpAVal);
   lcd.setCursor(3, 1);
@@ -71,6 +69,10 @@ void Display::updateStatuses(bool pumpA, bool pumpB, bool fan, bool solenoid) {
 
   lcd.setCursor(12, 1);
   lcd.print(solenoidVal);
+}
+
+void updateSensorReadings(float temp, float humid, float soilMost, String date, String time) {
+  
 }
 
 void Display::announce(String message, int seconds) {
