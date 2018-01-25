@@ -15,15 +15,37 @@ void Sensors::begin() {
     // todo
 }
 
-float Sensors::getTemperature() {
-  return 666;
+/** 
+ * Read actual sensor values and store them in the instance variables for later retrieval. 
+ * This is intended to be read on a periodic basis, remember that some sensors take longer than others
+ * to get output.
+ */
+void getActualReadings() {
+  // read the temp
+
+  // read the humidity
+
+  // read the soil moisture
 }
 
-float Sensors::getHumidity() {
-  return 777;
+/**
+ * Simply return the last reading from the temperature sensor
+ */
+float Sensors::getLastTemperature() {
+  return this->lastTemperature;
 }
 
-float Sensors::getSoilMoisture() {
-    return 888;
+/**
+ * Simply return the last reading from the humidity sensor
+ */
+float Sensors::getLastHumidity() {
+  return this->lastHumidity;
+}
+
+/**
+ * Simply return the last reading from the soil moisture sensor
+ */
+float Sensors::getLastSoilMoisture() {
+    return this->lastSoilMoisture;
 }
 

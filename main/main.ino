@@ -106,6 +106,7 @@ void task_15M() {
 // Get the display toggle switch position.
 int getDisplayToggleSwitchPosition() {
   // @todo
+  return -1;
 }
 
 // Keep screen update logic separated out of the timer code.
@@ -125,9 +126,9 @@ void triggerScreenUpdate() {
   } else {
     // display the time, date, temp, humidity
     display.updateSensorReadings(
-      sensors.getTemperature(),
-      sensors.getHumidity(),
-      sensors.getSoilMoisture(),
+      sensors.getLastTemperature(),
+      sensors.getLastHumidity(),
+      sensors.getLastSoilMoisture(),
       getRealDate(),
       getRealTime());
   }

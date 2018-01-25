@@ -71,8 +71,7 @@ void Display::updateStatuses(bool pumpA, bool pumpB, bool fan, bool solenoid) {
   lcd.print(solenoidVal);
 }
 
-void updateSensorReadings(float temp, float humid, float soilMost, String date, String time) {
-  
+void Display::updateSensorReadings(float temp, float humid, float soilMost, String realdate, String realtime) {
 }
 
 void Display::announce(String message, int seconds) {

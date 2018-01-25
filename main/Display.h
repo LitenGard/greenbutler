@@ -51,7 +51,7 @@ class Display
      * @param String The string representation of the RTC time
      * @param String The string representation of the RTC date
      */
-    void updateSensorReadings(float temp, float humid, float soilMost, String date, String time);
+    void updateSensorReadings(float temp, float humid, float soilMost, String realdate, String realtime);
 
   private:
     int muted = 0;

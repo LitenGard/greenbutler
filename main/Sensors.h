@@ -17,14 +17,16 @@ class Sensors
     Sensors();
     void begin();
 
-    float getTemperature();
-    float getHumidity();
-    float getSoilMoisture();
+    void getActualReadings();
+
+    float getLastTemperature();
+    float getLastHumidity();
+    float getLastSoilMoisture();
     
   private:
-    int lastTemperature;
-    int lastHumidity;
-    int lastSoilMoisture;
+    float lastTemperature;
+    float lastHumidity;
+    float lastSoilMoisture;
 };
 
 #endif
