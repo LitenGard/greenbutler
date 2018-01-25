@@ -16,6 +16,8 @@ int updateTimers = 0;
 int displayMode = 0;  // toggle switch for display mode.
 
 void setup() {
+  pinMode(PIN_DISPLAY_MODE_TOGGLESW, INPUT);
+  
   Serial.begin(9600);
 
   // In the beginnining...
@@ -84,29 +86,32 @@ void checkScheduler() {
 
 // This function is called every 5 seconds
 void task_1S() {
-  Serial.println(F("1S fired"));
+  Serial.print(F("1S"));
   triggerScreenUpdate();
 }
 
 // This function is called every 10 Seconds
 void task_10S() {
-  Serial.println(F("10S fired"));
+  Serial.print(F("10S"));
+  serialPrintDebug();
 }
 
 // This function is called every minute
 void task_1M() {
-  Serial.println(F("1M fired"));
+  Serial.print(F("1M"));
+  sensors.getActualReadings();
 }
 
 // This function is called every 15 minutes
 void task_15M() {
-  Serial.println(F("15M fired"));
+  Serial.print(F("15M"));
 }
 
 // Get the display toggle switch position.
 int getDisplayToggleSwitchPosition() {
-  // @todo
-  return -1;
+  int switchPos = digitalRead(PIN_DISPLAY_MODE_TOGGLESW);
+  displayMode = (switchPos == HIGH) ? 1 : 0;
+  return displayMode;
 }
 
 // Keep screen update logic separated out of the timer code.
@@ -132,7 +137,22 @@ void triggerScreenUpdate() {
       getRealDate(),
       getRealTime());
   }
+}
 
+// Print to serial monitor, the debug of readings and other values. Can be called on a whim :)
+void serialPrintDebug() {
+  Serial.println(F("=============== Debug start ==============="));
+  Serial.println(F("== statusPumpA, statusPumpB, statusFan, statusSolenoid, getLastTemperature, getLastHumidity, getLastSoilMoisture, getRealDate, getRealTime =="));
+  Serial.println(relay.statusPumpA());
+  Serial.println(relay.statusPumpB());
+  Serial.println(relay.statusFan());
+  Serial.println(relay.statusSolenoid());
+  Serial.println(sensors.getLastTemperature());
+  Serial.println(sensors.getLastHumidity());
+  Serial.println(sensors.getLastSoilMoisture());
+  Serial.println(getRealDate());
+  Serial.println(getRealTime());
+  Serial.println(F("=============== Debug stop ==============="));
 }
 
 /**

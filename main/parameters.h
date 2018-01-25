@@ -24,9 +24,11 @@
 #define PIN_LCD_D6 6
 #define PIN_LCD_D7 7
 
+#define PIN_DISPLAY_MODE_TOGGLESW A0
+
 /* Timer Constants & Variables */
-const char COUNTER_1S = 1;
-const char COUNTER_10S = 10;
-const char COUNTER_1M = 60;
-const char COUNTER_15M = 900;
+const int COUNTER_1S = 1;
+const int COUNTER_10S = 10;
+const int COUNTER_1M = 60;
+const int COUNTER_15M = 900;
 

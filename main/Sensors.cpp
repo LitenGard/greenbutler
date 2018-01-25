@@ -20,7 +20,7 @@ void Sensors::begin() {
  * This is intended to be read on a periodic basis, remember that some sensors take longer than others
  * to get output.
  */
-void getActualReadings() {
+void Sensors::getActualReadings() {
   // read the temp
 
   // read the humidity
