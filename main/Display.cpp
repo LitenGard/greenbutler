@@ -80,10 +80,10 @@ void Display::updateSensorReadings(float temp, float humid, float soilMost, Stri
   lcd.print(NAME_PUMP_B);
 
   lcd.setCursor(7,0);
-  lcd.print(NAME_FAN);
+  lcd.print(realdate);
 
   lcd.setCursor(7,1);
-  lcd.print(NAME_SOLENOID);  
+  lcd.print(realtime);  
 }
 
 void Display::announce(String message, int seconds) {

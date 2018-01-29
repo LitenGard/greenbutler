@@ -1,3 +1,5 @@
+#include <DS3231.h>
+
 #include <LiquidCrystal.h>
 #include <avr/io.h>
 #include <avr/interrupt.h>
@@ -10,6 +12,7 @@
 Display display;
 Relay relay;
 Sensors sensors;
+DS3231  rtc(SDA, SCL);
 
 volatile uint16_t timercount;
 int updateTimers = 0;
@@ -18,9 +21,10 @@ int displayMode = 0;  // toggle switch for display mode.
 void setup() {
   pinMode(PIN_DISPLAY_MODE_TOGGLESW, INPUT);
   
-  Serial.begin(9600);
+  Serial.begin(115200);
 
   // In the beginnining...
+  rtc.begin();
   relay.begin();
   display.begin();
   sensors.begin();
@@ -93,13 +97,13 @@ void task_1S() {
 // This function is called every 10 Seconds
 void task_10S() {
   Serial.print(F("10S"));
-  serialPrintDebug();
+  //serialPrintDebug();
 }
 
 // This function is called every minute
 void task_1M() {
   Serial.print(F("1M"));
-  sensors.getActualReadings();
+  //sensors.getActualReadings();
 }
 
 // This function is called every 15 minutes
@@ -118,6 +122,7 @@ int getDisplayToggleSwitchPosition() {
 void triggerScreenUpdate() {
 
   displayMode = getDisplayToggleSwitchPosition();
+  displayMode = 1;
 
   // Update the display every 5 seconds with statuses depending on the toggle switch position.
   if (displayMode == 0) {
@@ -159,21 +164,22 @@ void serialPrintDebug() {
  * Set the RTC time.
  * This is only to be used when time is not set.
  */
-void setRealTime() {
-
+void setRealTime(byte day, byte month, int year,  byte hour, byte minute, byte second) {
+  rtc.setTime(hour, minute, second);
+  rtc.setDate(day, month, year);
 }
 
 /**
  * Return the RTC time string.
  */
 String getRealTime() {
-
+  return rtc.getTimeStr();
 }
 
 /**
  * Return the RTC date string.
  */
 String getRealDate() {
-
+  return rtc.getDateStr();
 }
 
