@@ -24,7 +24,7 @@
 #define PIN_LCD_D6 6
 #define PIN_LCD_D7 7
 
-#define PIN_DISPLAY_MODE_TOGGLESW A0
+#define PIN_DISPLAY_MODE_TOGGLESW A3
 
 /* Timer Constants & Variables */
 const int COUNTER_1S = 1;

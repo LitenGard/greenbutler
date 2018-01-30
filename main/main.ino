@@ -122,7 +122,6 @@ int getDisplayToggleSwitchPosition() {
 void triggerScreenUpdate() {
 
   displayMode = getDisplayToggleSwitchPosition();
-  displayMode = 1;
 
   // Update the display every 5 seconds with statuses depending on the toggle switch position.
   if (displayMode == 0) {
