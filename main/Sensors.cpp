@@ -27,21 +27,16 @@ void Sensors::begin() {
  * to get output.
  */
 void Sensors::getActualReadings() {
+
+  // Read DHT sensor
   int chk = DHT.read11(PIN_SENSOR_DHT11);
   // chk = DHTLIB_OK, DHTLIB_ERROR_CHECKSUM, DHTLIB_ERROR_TIMEOUT
-  Serial.print("Temperature = ");
-  Serial.println(DHT.temperature);
   lastTemperature = DHT.temperature;
-  Serial.print("Humidity = ");
-  Serial.println(DHT.humidity);
   lastHumidity = DHT.humidity;
-  delay(1000);
-  
-  // read the temp
 
-  // read the humidity
-
-  // read the soil moisture
+  // Read soil moisture sensor
+  lastSoilMoisture = analogRead(PIN_SOIL_MOISTURE_ANALOG);
+  lastSoilMoisture = map(lastSoilMoisture, SOIL_MOIST_MAP_DRY, SOIL_MOIST_MAP_SOAK, 0, 99);
 }
 
 /**

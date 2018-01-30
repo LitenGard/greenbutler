@@ -33,6 +33,8 @@ void setup() {
 
   wdt_enable(WDTO_8S);  // watchdog threshold to 8 secs
   configureTimers();
+
+  //setRealTime(30, 1, 2018,  14, 28, 45);
 }
 
 void loop() {
@@ -175,7 +177,7 @@ void setRealTime(byte day, byte month, int year,  byte hour, byte minute, byte s
  * Return the RTC time string.
  */
 String getRealTime() {
-  return rtc.getTimeStr();
+  return rtc.getTimeStr(FORMAT_SHORT);
 }
 
 /**

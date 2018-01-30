@@ -8,7 +8,7 @@
 #define TIMER_READ 5000
 
 #define NAME_PUMP_A "P1"
-#define NAME_PUMP_B "p2"
+#define NAME_PUMP_B "P2"
 #define NAME_FAN "Fan"
 #define NAME_SOLENOID "Flow"
 
@@ -28,7 +28,11 @@
 
 // Sensors
 #define PIN_SENSOR_DHT11 12
+#define PIN_SOIL_MOISTURE_ANALOG A2
 
+// Values to calibrate the soil moisture probe by testing!
+#define SOIL_MOIST_MAP_DRY 1020
+#define SOIL_MOIST_MAP_SOAK 130
 
 /* Timer Constants & Variables */
 const int COUNTER_1S = 1;

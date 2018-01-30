@@ -47,11 +47,11 @@ class Display
      * Updates the runScreen() layour with the given readings from the sensors with date and time.
      * @param float temp The current temperature reading
      * @param float humid The current humidity readings
-     * @param float soilMost The current soil moisture reading
+     * @param float soilMoist The current soil moisture reading
      * @param String The string representation of the RTC time
      * @param String The string representation of the RTC date
      */
-    void updateSensorReadings(float temp, float humid, float soilMost, String realdate, String realtime);
+    void updateSensorReadings(float temp, float humid, float soilMoist, String realdate, String realtime);
 
   private:
     int muted = 0;

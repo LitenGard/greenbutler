@@ -71,18 +71,33 @@ void Display::updateStatuses(bool pumpA, bool pumpB, bool fan, bool solenoid) {
   lcd.print(solenoidVal);
 }
 
-void Display::updateSensorReadings(float temp, float humid, float soilMost, String realdate, String realtime) {
+void Display::updateSensorReadings(float temp, float humid, float soilMoist, String realdate, String realtime) {
+  soilMoist = (soilMoist > 99) ? 99 : soilMoist;
+  
   lcd.clear();
   lcd.setCursor(0,0);
-  lcd.print(temp);
+  lcd.print('t');
+  lcd.setCursor(2,0);
+  lcd.print((int)temp);
+  lcd.setCursor(4,0);
+  lcd.print((char)223); // degrees symbol
   
-  lcd.setCursor(0,1);
-  lcd.print(humid);
-
   lcd.setCursor(6,0);
+  lcd.print((char)64);  // @ symbol
+  lcd.setCursor(8,0);
+  lcd.print((int)humid);
+
+  lcd.setCursor(11,0);
+  lcd.print('m');
+  lcd.setCursor(13,0);
+  lcd.print((int)soilMoist);
+  lcd.setCursor(15,0);
+  lcd.print('%');
+
+  lcd.setCursor(0,1);
   lcd.print(realdate);
 
-  lcd.setCursor(6,1);
+  lcd.setCursor(11,1);
   lcd.print(realtime);  
 }
 
