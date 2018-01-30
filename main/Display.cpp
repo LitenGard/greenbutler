@@ -74,15 +74,15 @@ void Display::updateStatuses(bool pumpA, bool pumpB, bool fan, bool solenoid) {
 void Display::updateSensorReadings(float temp, float humid, float soilMost, String realdate, String realtime) {
   lcd.clear();
   lcd.setCursor(0,0);
-  lcd.print(NAME_PUMP_A);
+  lcd.print(temp);
   
   lcd.setCursor(0,1);
-  lcd.print(NAME_PUMP_B);
+  lcd.print(humid);
 
-  lcd.setCursor(7,0);
+  lcd.setCursor(6,0);
   lcd.print(realdate);
 
-  lcd.setCursor(7,1);
+  lcd.setCursor(6,1);
   lcd.print(realtime);  
 }
 

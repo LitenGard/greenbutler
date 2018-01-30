@@ -1,3 +1,5 @@
+#include <dht.h>
+
 #include <DS3231.h>
 
 #include <LiquidCrystal.h>
@@ -98,6 +100,7 @@ void task_1S() {
 void task_10S() {
   Serial.print(F("10S"));
   //serialPrintDebug();
+  sensors.getActualReadings();
 }
 
 // This function is called every minute

@@ -26,6 +26,10 @@
 
 #define PIN_DISPLAY_MODE_TOGGLESW A3
 
+// Sensors
+#define PIN_SENSOR_DHT11 12
+
+
 /* Timer Constants & Variables */
 const int COUNTER_1S = 1;
 const int COUNTER_10S = 10;
