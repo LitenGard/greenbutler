@@ -53,6 +53,16 @@ class Display
      */
     void updateSensorReadings(float temp, float humid, float soilMoist, String realdate, String realtime);
 
+    /**
+     * Show a sensor/input reading indicator
+     */
+    void showReadingIndicator();
+
+    /**
+     * Clear the sensor/input reading indicator
+     */
+    void clearReadingIndicator();
+    
   private:
     int muted = 0;
 

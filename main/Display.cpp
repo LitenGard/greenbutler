@@ -97,9 +97,20 @@ void Display::updateSensorReadings(float temp, float humid, float soilMoist, Str
   lcd.setCursor(0,1);
   lcd.print(realdate);
 
-  lcd.setCursor(11,1);
+  lcd.setCursor(10,1);
   lcd.print(realtime);  
 }
+
+void Display::showReadingIndicator() {
+  lcd.setCursor(15,1);
+  lcd.print("*");  
+}
+
+void Display::clearReadingIndicator() {
+  lcd.setCursor(16,1);
+  lcd.print(" ");  
+}
+
 
 void Display::announce(String message, int seconds) {
   // todo - announce on same location/line everytime

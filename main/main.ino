@@ -1,6 +1,6 @@
-#include <dht.h>
+#include <DS3231_Simple.h>
 
-#include <DS3231.h>
+#include <dht.h>
 
 #include <LiquidCrystal.h>
 #include <avr/io.h>
@@ -14,11 +14,13 @@
 Display display;
 Relay relay;
 Sensors sensors;
-DS3231  rtc(SDA, SCL);
+DS3231_Simple Clock;
 
 volatile uint16_t timercount;
+int readingIndicatorActive = 0;
 int updateTimers = 0;
 int displayMode = 0;  // toggle switch for display mode.
+DateTime rtcDateTime;
 
 void setup() {
   pinMode(PIN_DISPLAY_MODE_TOGGLESW, INPUT);
@@ -26,7 +28,7 @@ void setup() {
   Serial.begin(115200);
 
   // In the beginnining...
-  rtc.begin();
+  Clock.begin();
   relay.begin();
   display.begin();
   sensors.begin();
@@ -95,20 +97,19 @@ void checkScheduler() {
 // This function is called every 5 seconds
 void task_1S() {
   Serial.print(F("1S"));
+  checkAndResetReadingIndicator();
   triggerScreenUpdate();
 }
 
 // This function is called every 10 Seconds
 void task_10S() {
   Serial.print(F("10S"));
-  //serialPrintDebug();
-  sensors.getActualReadings();
+  readSensorsAndNotify();
 }
 
 // This function is called every minute
 void task_1M() {
   Serial.print(F("1M"));
-  //sensors.getActualReadings();
 }
 
 // This function is called every 15 minutes
@@ -116,11 +117,34 @@ void task_15M() {
   Serial.print(F("15M"));
 }
 
+
 // Get the display toggle switch position.
 int getDisplayToggleSwitchPosition() {
   int switchPos = digitalRead(PIN_DISPLAY_MODE_TOGGLESW);
   displayMode = (switchPos == HIGH) ? 1 : 0;
   return displayMode;
+}
+
+/**
+ * Manages a nifty reading indicator on the lcd, times it, and clears it when ready.
+ */
+void checkAndResetReadingIndicator() {
+  if (readingIndicatorActive == 1) {
+    readingIndicatorActive++;
+  } else if (readingIndicatorActive > 1) {
+    display.clearReadingIndicator();
+    readingIndicatorActive = 0;
+  }  
+}
+
+/**
+ * Keep the sensor reading calls and display updates together.
+ * This also times and shows a little reading indicator on the lcd.
+ */
+void readSensorsAndNotify() {
+  display.showReadingIndicator();
+  readingIndicatorActive = 1;
+  sensors.getActualReadings();
 }
 
 // Keep screen update logic separated out of the timer code.
@@ -165,25 +189,30 @@ void serialPrintDebug() {
 }
 
 /**
- * Set the RTC time.
- * This is only to be used when time is not set.
+ * For setting RTC date and time.
+ * This should only be trigerred when operator is ready to send serial responses.
  */
-void setRealTime(byte day, byte month, int year,  byte hour, byte minute, byte second) {
-  rtc.setTime(hour, minute, second);
-  rtc.setDate(day, month, year);
+void promptSerialForRealTime() {
+  Clock.promptForTimeAndDate(Serial); 
 }
 
 /**
  * Return the RTC time string.
  */
 String getRealTime() {
-  return rtc.getTimeStr(FORMAT_SHORT);
+  rtcDateTime = Clock.read();
+  char timeString[9];
+  sprintf_P(timeString, PSTR("%02d:%02d"), rtcDateTime.Hour, rtcDateTime.Minute);
+  return timeString;
 }
 
 /**
  * Return the RTC date string.
  */
 String getRealDate() {
-  return rtc.getDateStr();
+  rtcDateTime = Clock.read();
+  char dateString[8];
+  sprintf_P(dateString, PSTR("%02d/%02d/%02d"), rtcDateTime.Day, rtcDateTime.Month, rtcDateTime.Year);
+  return dateString;
 }
 
