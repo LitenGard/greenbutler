@@ -39,10 +39,10 @@ void Display::mute() {
 }
 
 void Display::updateStatuses(bool pumpA, bool pumpB, bool fan, bool solenoid) {
-  String pumpAVal = (pumpA == true) ? "on" : "off";
-  String pumpBVal = (pumpB == true) ? "on" : "off";
-  String fanVal = (fan == true) ? "on" : "off";
-  String solenoidVal = (solenoid == true) ? "open" : "clsd";
+  char *pumpAVal = (pumpA == true) ? "on" : "off";
+  char *pumpBVal = (pumpB == true) ? "on" : "off";
+  char *fanVal = (fan == true) ? "on" : "off";
+  char *solenoidVal = (solenoid == true) ? "open" : "clsd";
 
   // Set label positions, print labels.
   lcd.clear();
@@ -71,7 +71,7 @@ void Display::updateStatuses(bool pumpA, bool pumpB, bool fan, bool solenoid) {
   lcd.print(solenoidVal);
 }
 
-void Display::updateSensorReadings(float temp, float humid, float soilMoist, String realdate, String realtime) {
+void Display::updateSensorReadings(float temp, float humid, float soilMoist, char* realdate, char* realtime) {
   soilMoist = (soilMoist > 99) ? 99 : soilMoist;
   
   lcd.clear();

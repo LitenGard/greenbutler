@@ -19,8 +19,10 @@ DS3231_Simple Clock;
 volatile uint16_t timercount;
 int readingIndicatorActive = 0;
 int updateTimers = 0;
-int displayMode = 0;  // toggle switch for display mode.
 DateTime rtcDateTime;
+
+enum DisplayMode{DISPLAYMODE_SENSORS = 1, DISPLAYMODE_STATUSES = 0};  // toggle switch for display mode.
+DisplayMode displayMode;
 
 void setup() {
   pinMode(PIN_DISPLAY_MODE_TOGGLESW, INPUT);
@@ -142,8 +144,10 @@ void checkAndResetReadingIndicator() {
  * This also times and shows a little reading indicator on the lcd.
  */
 void readSensorsAndNotify() {
-  display.showReadingIndicator();
-  readingIndicatorActive = 1;
+  if (displayMode == DISPLAYMODE_SENSORS) {
+    display.showReadingIndicator();
+      readingIndicatorActive = 1;
+  }
   sensors.getActualReadings();
 }
 
@@ -153,7 +157,7 @@ void triggerScreenUpdate() {
   displayMode = getDisplayToggleSwitchPosition();
 
   // Update the display every 5 seconds with statuses depending on the toggle switch position.
-  if (displayMode == 0) {
+  if (displayMode == DISPLAYMODE_STATUSES) {
     // display the relay statuses
     display.updateStatuses(
       relay.statusPumpA(),
@@ -161,7 +165,7 @@ void triggerScreenUpdate() {
       relay.statusFan(),
       relay.statusSolenoid());  
 
-  } else {
+  } else if (displayMode == DISPLAYMODE_SENSORS){
     // display the time, date, temp, humidity
     display.updateSensorReadings(
       sensors.getLastTemperature(),
@@ -199,7 +203,7 @@ void promptSerialForRealTime() {
 /**
  * Return the RTC time string.
  */
-String getRealTime() {
+char* getRealTime() {
   rtcDateTime = Clock.read();
   char timeString[9];
   sprintf_P(timeString, PSTR("%02d:%02d"), rtcDateTime.Hour, rtcDateTime.Minute);
@@ -209,10 +213,11 @@ String getRealTime() {
 /**
  * Return the RTC date string.
  */
-String getRealDate() {
+char* getRealDate() {
   rtcDateTime = Clock.read();
   char dateString[8];
   sprintf_P(dateString, PSTR("%02d/%02d/%02d"), rtcDateTime.Day, rtcDateTime.Month, rtcDateTime.Year);
   return dateString;
 }
+
 
