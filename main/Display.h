@@ -25,11 +25,6 @@ class Display
     void reset();
 
     /**
-       Standard announcement
-    */
-    void announce(String message, int seconds);
-
-    /**
        Toggles blank/Mute of the greenbutler display.
     */
     void mute();

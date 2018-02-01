@@ -111,12 +111,3 @@ void Display::clearReadingIndicator() {
   lcd.print(" ");  
 }
 
-
-void Display::announce(String message, int seconds) {
-  // todo - announce on same location/line everytime
-  lcd.blink();
-  lcd.print(message);
-  delay(seconds * 1000);
-  lcd.noBlink();
-}
-

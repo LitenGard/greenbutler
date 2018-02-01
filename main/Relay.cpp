@@ -19,13 +19,7 @@ void Relay::begin()
   pinMode(PIN_RELAY3_PUMP_A, OUTPUT);
   pinMode(PIN_RELAY4_PUMP_B, OUTPUT);
 
-  // what is the relays default off and on? confused
-  //  stopPumpA();
-  //  stopPumpB();
-  //  stopFan();
-  //  closeSolenoid();
-  
-  // default off = HIGH
+  // default off = HIGH (RelayBoard in use has a default OFF on HIGH)
   digitalWrite(PIN_RELAY3_PUMP_A, HIGH);
   digitalWrite(PIN_RELAY4_PUMP_B, HIGH);
   digitalWrite(PIN_RELAY2_FAN, HIGH);

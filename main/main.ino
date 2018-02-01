@@ -17,6 +17,7 @@ Sensors sensors;
 DS3231_Simple Clock;
 
 volatile uint16_t timercount;
+uint8_t alarmsFired;
 int readingIndicatorActive = 0;
 int updateTimers = 0;
 DateTime rtcDateTime;
@@ -37,8 +38,7 @@ void setup() {
 
   wdt_enable(WDTO_8S);  // watchdog threshold to 8 secs
   configureTimers();
-
-  //setRealTime(30, 1, 2018,  14, 28, 45);
+  setupAlarms();
 }
 
 void loop() {
@@ -51,6 +51,10 @@ void loop() {
     updateTimers = 0;
   }
 
+  alarmsFired = Clock.checkAlarms();
+  if(alarmsFired & 2) { // check alarm type 2
+    handleAlarm();
+  }
 }
 
 /*
@@ -107,11 +111,15 @@ void task_1S() {
 void task_10S() {
   Serial.print(F("10S"));
   readSensorsAndNotify();
+
+    // check for any running pumps, and if they need to be switched off.
 }
 
 // This function is called every minute
 void task_1M() {
   Serial.print(F("1M"));
+
+  // check soil moisture, and call handleDryLimitAlarm() if needed.
 }
 
 // This function is called every 15 minutes
@@ -218,6 +226,43 @@ char* getRealDate() {
   char dateString[8];
   sprintf_P(dateString, PSTR("%02d/%02d/%02d"), rtcDateTime.Day, rtcDateTime.Month, rtcDateTime.Year);
   return dateString;
+}
+
+void setupAlarms() {
+  Clock.disableAlarms();
+  DateTime alarmTimestamp = Clock.read();
+  alarmTimestamp.Hour = ALARM_DAILY_HOUR;
+  alarmTimestamp.Minute = ALARM_DAILY_MINUTE;
+  Clock.setAlarm(alarmTimestamp, DS3231_Simple::ALARM_DAILY);   
+}
+
+/**
+ * This is the handler function for the main daily watering.
+ * Relays can be triggered here.
+ */
+void handleAlarm() {
+  Serial.print("ALARM_MAIN!");
+  // if we get here, we can start both pumps, to run for their respective times.
+
+  // but first, is it safe to start them?
+  
+  // -- check soil moisture, if we are not dry enough, we skip pump start this time.
+
+  // -- check temperature, if we are too low, we may have ice in the pipes, skip running the pumps this time.
+
+  // set start time
+  // start pumps
+}
+
+/**
+ * This function is called when the soil moisture detection found soil to be under the dryness threshold.
+ * The purpose here is to start the pumps, and not to wait for the timer.
+ */
+void handleDryLimitAlarm() {
+  // check soil moisture again for safety. If really dry, run.
+  // check temperature, if too low, and ice possible, dont run.
+  // set start time
+  // start pumps  
 }
 
 
