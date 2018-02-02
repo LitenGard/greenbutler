@@ -35,6 +35,8 @@ class Relay
     bool stateFan = 0;
     bool stateSolenoid = 0;
 
+    unsigned long startTimePumpA = 0L;
+    unsigned long startTimePumpB = 0L;
 };
 
 #endif

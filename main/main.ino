@@ -244,11 +244,10 @@ void handleAlarm() {
   Serial.print("ALARM_MAIN!");
   // if we get here, we can start both pumps, to run for their respective times.
 
-  // but first, is it safe to start them?
-  
-  // -- check soil moisture, if we are not dry enough, we skip pump start this time.
-
-  // -- check temperature, if we are too low, we may have ice in the pipes, skip running the pumps this time.
+  if (!pumpStartSafetyCheck()) {
+    Serial.print("Pump safety checks did not pass. Not starting any pumps now [handleAlarm].");
+    return;
+  }
 
   // set start time
   // start pumps
@@ -259,10 +258,34 @@ void handleAlarm() {
  * The purpose here is to start the pumps, and not to wait for the timer.
  */
 void handleDryLimitAlarm() {
-  // check soil moisture again for safety. If really dry, run.
-  // check temperature, if too low, and ice possible, dont run.
+  if (!pumpStartSafetyCheck()) {
+    Serial.print("Pump safety checks did not pass. Not starting any pumps now [dryLimitAlarm].");
+    return;
+  }
+
   // set start time
   // start pumps  
 }
 
+/**
+ * All pump prestart safety checks happen here.
+ * Overwatering, Icing, etc
+ * Will return true if safe enough to go ahead with pump start.
+ * @return boolean
+ */
+bool pumpStartSafetyCheck() {
+  float moisture = sensors.getLastSoilMoisture();
+  float temperature = sensors.getLastSoilMoisture();
+  bool moistureDryEnough, temperatureNotFreezing;
+
+  if (moisture <= DRY_SOIL_THRESHOLD_PERCENT) {
+    moistureDryEnough = true;
+  }
+
+  if (temperature >= PUMP_ICE_PROTECTION_DEGREES) {
+      temperatureNotFreezing = true;
+  }
+
+  return moistureDryEnough && temperatureNotFreezing;
+}
 

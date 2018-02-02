@@ -50,10 +50,10 @@
 #define DRY_SOIL_TRIGGER_PERCENT 20
 
 // -- If the temperature reaches this much, start the fans
-#define START_FAN_AT_DEGREES = 40
+#define START_FAN_AT_DEGREES 40
 
 // -- If the temperature gets this low, do not start pumps, as they may be iced up.
-#define PUMP_ICE_PROTECTION_DEGREES = 2
+#define PUMP_ICE_PROTECTION_DEGREES 2
 
 
 /* Timer Constants & Variables */
