@@ -36,8 +36,8 @@
 
 // ----- RUNNING PARAMETERS -----
 // -- This is the daily watering alarm
-#define ALARM_DAILY_HOUR 15
-#define ALARM_DAILY_MINUTE 42
+#define ALARM_DAILY_HOUR 22
+#define ALARM_DAILY_MINUTE 40
 
 // -- How many minutes the pumps must run
 #define RUNTIME_MINUTES_PUMP_A 1

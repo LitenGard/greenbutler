@@ -104,27 +104,29 @@ void checkScheduler() {
 void task_1S() {
   Serial.print(F("1S"));
   checkAndResetReadingIndicator();
+  checkAndResetAndTerminatePumps();
   triggerScreenUpdate();
 }
 
 // This function is called every 10 Seconds
 void task_10S() {
   Serial.print(F("10S"));
-  readSensorsAndNotify();
-
-    // check for any running pumps, and if they need to be switched off.
+  readSensorsAndNotify(); // reading sensors every ten seconds is good enough ?
 }
 
 // This function is called every minute
 void task_1M() {
   Serial.print(F("1M"));
-
-  // check soil moisture, and call handleDryLimitAlarm() if needed.
 }
 
 // This function is called every 15 minutes
 void task_15M() {
   Serial.print(F("15M"));
+
+  // once in 15 minutes, check for dry limit threshold, and kick off the dry alarm!
+  if (sensors.getLastSoilMoisture() <= DRY_SOIL_TRIGGER_PERCENT) {
+    handleDryLimitAlarm();
+  }
 }
 
 
@@ -244,13 +246,7 @@ void handleAlarm() {
   Serial.print("ALARM_MAIN!");
   // if we get here, we can start both pumps, to run for their respective times.
 
-  if (!pumpStartSafetyCheck()) {
-    Serial.print("Pump safety checks did not pass. Not starting any pumps now [handleAlarm].");
-    return;
-  }
-
-  // set start time
-  // start pumps
+  checkAndSetAndStartPumps();
 }
 
 /**
@@ -258,13 +254,7 @@ void handleAlarm() {
  * The purpose here is to start the pumps, and not to wait for the timer.
  */
 void handleDryLimitAlarm() {
-  if (!pumpStartSafetyCheck()) {
-    Serial.print("Pump safety checks did not pass. Not starting any pumps now [dryLimitAlarm].");
-    return;
-  }
-
-  // set start time
-  // start pumps  
+  checkAndSetAndStartPumps();
 }
 
 /**
@@ -287,5 +277,34 @@ bool pumpStartSafetyCheck() {
   }
 
   return moistureDryEnough && temperatureNotFreezing;
+}
+
+/**
+ * Set start times, and then fire off the two pumps A and B.
+ */
+void checkAndSetAndStartPumps() {
+  if (!pumpStartSafetyCheck()) {
+    Serial.print("Pump safety checks did not pass. Not starting any pumps now [dryLimitAlarm].");
+    return;
+  }
+  // set time of start of pump A
+  // start pump A
+
+  // set time of start of pump B
+  // start pump B
+}
+
+/**
+ * Unset the start times, if any pumps are running, then switch them off.
+ * This is a post-pump-run-cleanup
+ */
+void checkAndResetAndTerminatePumps() {
+  // check if pump A is running
+  // unset start time for pump A
+  // stop Pump A
+
+  // check if pump B is running
+  // unset start time for pump B
+  // stop Pump B
 }
 
