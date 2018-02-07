@@ -1,5 +1,5 @@
 
-#define SYS_NAME_VERSION "GreenButler v0.4"
+#define SYS_NAME_VERSION "GreenButler v0.5"
 #define SYS_GREETING "Hello Karoo!"
 
 #define LCD_CHARS 16
@@ -36,12 +36,12 @@
 
 // ----- RUNNING PARAMETERS -----
 // -- This is the daily watering alarm
-#define ALARM_DAILY_HOUR 22
-#define ALARM_DAILY_MINUTE 40
+#define ALARM_DAILY_HOUR 10
+#define ALARM_DAILY_MINUTE 45
 
 // -- How many minutes the pumps must run
-#define RUNTIME_MINUTES_PUMP_A 1
-#define RUNTIME_MINUTES_PUMP_B 1
+#define RUNTIME_SECONDS_PUMP_A 12
+#define RUNTIME_SECONDS_PUMP_B 8
 
 // -- If the soil is at this percentage of dryness, the alarm is permitted to start watering
 #define DRY_SOIL_THRESHOLD_PERCENT 30

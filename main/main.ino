@@ -22,6 +22,9 @@ int readingIndicatorActive = 0;
 int updateTimers = 0;
 DateTime rtcDateTime;
 
+unsigned long startTimePumpA;
+unsigned long startTimePumpB;
+
 enum DisplayMode{DISPLAYMODE_SENSORS = 1, DISPLAYMODE_STATUSES = 0};  // toggle switch for display mode.
 DisplayMode displayMode;
 
@@ -287,24 +290,35 @@ void checkAndSetAndStartPumps() {
     Serial.print("Pump safety checks did not pass. Not starting any pumps now [dryLimitAlarm].");
     return;
   }
-  // set time of start of pump A
-  // start pump A
+  
+  // set time of start of pump A and start it.
+  startTimePumpA = millis();
+  relay.startPumpA();
 
-  // set time of start of pump B
-  // start pump B
+  // set time of start of pump B and start it.
+  startTimePumpB = millis();
+  relay.startPumpB();
 }
 
 /**
- * Unset the start times, if any pumps are running, then switch them off.
+ * Unset the start times, if any pumps are running, then switch them off after the appropriate amount of time.
  * This is a post-pump-run-cleanup
  */
 void checkAndResetAndTerminatePumps() {
-  // check if pump A is running
-  // unset start time for pump A
-  // stop Pump A
+  unsigned long currentMillis = millis();
 
-  // check if pump B is running
-  // unset start time for pump B
-  // stop Pump B
+  if (relay.statusPumpA() == true) {
+    if (((currentMillis - startTimePumpA) / 1000) >= RUNTIME_SECONDS_PUMP_A) {
+      startTimePumpA = 0L;
+      relay.stopPumpA();
+    }
+  }
+
+  if (relay.statusPumpB() == true) {
+    if (((currentMillis - startTimePumpB) / 1000) >= RUNTIME_SECONDS_PUMP_B) {
+      startTimePumpB = 0L;
+      relay.stopPumpB();
+    }
+  }
 }
 
