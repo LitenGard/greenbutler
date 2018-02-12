@@ -24,13 +24,14 @@ DateTime rtcDateTime;
 
 unsigned long startTimePumpA;
 unsigned long startTimePumpB;
+uint8_t fansRunning = 0;
 
-enum DisplayMode{DISPLAYMODE_SENSORS = 1, DISPLAYMODE_STATUSES = 0};  // toggle switch for display mode.
+enum DisplayMode {DISPLAYMODE_SENSORS = 1, DISPLAYMODE_STATUSES = 0}; // toggle switch for display mode.
 DisplayMode displayMode;
 
 void setup() {
   pinMode(PIN_DISPLAY_MODE_TOGGLESW, INPUT);
-  
+
   Serial.begin(115200);
 
   // In the beginnining...
@@ -55,7 +56,7 @@ void loop() {
   }
 
   alarmsFired = Clock.checkAlarms();
-  if(alarmsFired & 2) { // check alarm type 2
+  if (alarmsFired & 2) { // check alarm type 2
     handleAlarm();
   }
 }
@@ -107,7 +108,11 @@ void checkScheduler() {
 void task_1S() {
   Serial.print(F("1S"));
   checkAndResetReadingIndicator();
+
+  // if stuff is running, and needs to stop, then stop them.
   checkAndResetAndTerminatePumps();
+  checkAndStopFans();
+
   triggerScreenUpdate();
 }
 
@@ -115,6 +120,16 @@ void task_1S() {
 void task_10S() {
   Serial.print(F("10S"));
   readSensorsAndNotify(); // reading sensors every ten seconds is good enough ?
+
+  // no point in doing start checks, if fans are already started :)
+  if (fansRunning == 0) {
+    Serial.print(checkFanStartRequirements());
+    Serial.print("  ");
+    if (checkFanStartRequirements() == 1) {
+      Serial.print(F("fans will start"));
+      checkAndSetAndStartFans();
+    }
+  }
 }
 
 // This function is called every minute
@@ -141,25 +156,25 @@ int getDisplayToggleSwitchPosition() {
 }
 
 /**
- * Manages a nifty reading indicator on the lcd, times it, and clears it when ready.
- */
+   Manages a nifty reading indicator on the lcd, times it, and clears it when ready.
+*/
 void checkAndResetReadingIndicator() {
   if (readingIndicatorActive == 1) {
     readingIndicatorActive++;
   } else if (readingIndicatorActive > 1) {
     display.clearReadingIndicator();
     readingIndicatorActive = 0;
-  }  
+  }
 }
 
 /**
- * Keep the sensor reading calls and display updates together.
- * This also times and shows a little reading indicator on the lcd.
- */
+   Keep the sensor reading calls and display updates together.
+   This also times and shows a little reading indicator on the lcd.
+*/
 void readSensorsAndNotify() {
   if (displayMode == DISPLAYMODE_SENSORS) {
     display.showReadingIndicator();
-      readingIndicatorActive = 1;
+    readingIndicatorActive = 1;
   }
   sensors.getActualReadings();
 }
@@ -176,9 +191,9 @@ void triggerScreenUpdate() {
       relay.statusPumpA(),
       relay.statusPumpB(),
       relay.statusFan(),
-      relay.statusSolenoid());  
+      relay.statusSolenoid());
 
-  } else if (displayMode == DISPLAYMODE_SENSORS){
+  } else if (displayMode == DISPLAYMODE_SENSORS) {
     // display the time, date, temp, humidity
     display.updateSensorReadings(
       sensors.getLastTemperature(),
@@ -206,16 +221,16 @@ void serialPrintDebug() {
 }
 
 /**
- * For setting RTC date and time.
- * This should only be trigerred when operator is ready to send serial responses.
- */
+   For setting RTC date and time.
+   This should only be trigerred when operator is ready to send serial responses.
+*/
 void promptSerialForRealTime() {
-  Clock.promptForTimeAndDate(Serial); 
+  Clock.promptForTimeAndDate(Serial);
 }
 
 /**
- * Return the RTC time string.
- */
+   Return the RTC time string.
+*/
 char* getRealTime() {
   rtcDateTime = Clock.read();
   char timeString[9];
@@ -224,8 +239,8 @@ char* getRealTime() {
 }
 
 /**
- * Return the RTC date string.
- */
+   Return the RTC date string.
+*/
 char* getRealDate() {
   rtcDateTime = Clock.read();
   char dateString[8];
@@ -233,39 +248,96 @@ char* getRealDate() {
   return dateString;
 }
 
+/**
+   Checks if fans need to start based on temperature and/or humidity
+   Returns 1 if fans should start, or 0 if not.
+*/
+int checkFanStartRequirements() {
+  float temperature = sensors.getLastTemperature();
+  float humidity = sensors.getLastHumidity();
+
+  bool tempTooHigh = false;
+  bool humidityTooHigh = false;
+
+  if (temperature > START_FAN_AT_DEGREES) {
+    tempTooHigh = true;
+  }
+
+  if (humidity > START_FAN_AT_HUMID) {
+    humidityTooHigh = true;
+  }
+
+  return (tempTooHigh || humidityTooHigh) ? 1 : 0;
+}
+
+/**
+   Stop the fans if either of the reasons for them running, is satisfied.
+   Ex: If both humidity and temperature is within bounds, stop and reset fans.
+*/
+void checkAndStopFans() {
+
+  // we can skip all the checks and logic if the fans aren't ectually running
+  if (relay.statusFan() == true) {
+    float temperature = sensors.getLastTemperature();
+    float humidity = sensors.getLastHumidity();
+
+    bool tempNormal = false;
+    bool humidityNormal = false;
+
+    if (temperature < STOP_FAN_AT_DEGREES) {
+      tempNormal = true;
+    }
+
+    if (humidity < STOP_FAN_AT_HUMID) {
+      humidityNormal = true;
+    }
+
+    if (tempNormal && humidityNormal) {
+      relay.stopFan();
+      fansRunning = 0;
+    }
+  }
+}
+
+/**
+   Start the fans after doing any neccesary checks and sets.
+*/
+void checkAndSetAndStartFans() {
+  fansRunning = 1;
+  relay.startFan();
+}
+
 void setupAlarms() {
   Clock.disableAlarms();
   DateTime alarmTimestamp = Clock.read();
   alarmTimestamp.Hour = ALARM_DAILY_HOUR;
   alarmTimestamp.Minute = ALARM_DAILY_MINUTE;
-  Clock.setAlarm(alarmTimestamp, DS3231_Simple::ALARM_DAILY);   
+  Clock.setAlarm(alarmTimestamp, DS3231_Simple::ALARM_DAILY);
 }
 
 /**
- * This is the handler function for the main daily watering.
- * Relays can be triggered here.
- */
+   This is the handler function for the main daily watering.
+   Relays can be triggered here.
+*/
 void handleAlarm() {
   Serial.print("ALARM_MAIN!");
-  // if we get here, we can start both pumps, to run for their respective times.
-
   checkAndSetAndStartPumps();
 }
 
 /**
- * This function is called when the soil moisture detection found soil to be under the dryness threshold.
- * The purpose here is to start the pumps, and not to wait for the timer.
- */
+   This function is called when the soil moisture detection found soil to be under the dryness threshold.
+   The purpose here is to start the pumps, and not to wait for the timer.
+*/
 void handleDryLimitAlarm() {
   checkAndSetAndStartPumps();
 }
 
 /**
- * All pump prestart safety checks happen here.
- * Overwatering, Icing, etc
- * Will return true if safe enough to go ahead with pump start.
- * @return boolean
- */
+   All pump prestart safety checks happen here.
+   Overwatering, Icing, etc
+   Will return true if safe enough to go ahead with pump start.
+   @return boolean
+*/
 bool pumpStartSafetyCheck() {
   float moisture = sensors.getLastSoilMoisture();
   float temperature = sensors.getLastSoilMoisture();
@@ -276,34 +348,41 @@ bool pumpStartSafetyCheck() {
   }
 
   if (temperature >= PUMP_ICE_PROTECTION_DEGREES) {
-      temperatureNotFreezing = true;
+    temperatureNotFreezing = true;
   }
 
   return moistureDryEnough && temperatureNotFreezing;
 }
 
 /**
- * Set start times, and then fire off the two pumps A and B.
- */
+   Set start times, and then fire off the two pumps A and B.
+*/
 void checkAndSetAndStartPumps() {
   if (!pumpStartSafetyCheck()) {
     Serial.print("Pump safety checks did not pass. Not starting any pumps now [dryLimitAlarm].");
     return;
   }
-  
+
+  // The master solenoid must be open for any pumps to receive water.
+  relay.openSolenoid();
+
   // set time of start of pump A and start it.
-  startTimePumpA = millis();
-  relay.startPumpA();
+  if (PUMP_DISABLE_A == 0) {
+    startTimePumpA = millis();
+    relay.startPumpA();
+  }
 
   // set time of start of pump B and start it.
-  startTimePumpB = millis();
-  relay.startPumpB();
+  if (PUMP_DISABLE_B == 0) {
+    startTimePumpB = millis();
+    relay.startPumpB();
+  }
 }
 
 /**
- * Unset the start times, if any pumps are running, then switch them off after the appropriate amount of time.
- * This is a post-pump-run-cleanup
- */
+   Unset the start times, if any pumps are running, then switch them off after the appropriate amount of time.
+   This is a post-pump-run-cleanup
+*/
 void checkAndResetAndTerminatePumps() {
   unsigned long currentMillis = millis();
 
@@ -319,6 +398,12 @@ void checkAndResetAndTerminatePumps() {
       startTimePumpB = 0L;
       relay.stopPumpB();
     }
+  }
+
+  // simple short circuit, if there are no startTimes on either pumps, we assume they are both stopped now.
+  // Thus we can close the solenoid if it is still open.
+  if ((startTimePumpA == 0) && (startTimePumpB == 0)) {
+    relay.closeSolenoid();
   }
 }
 

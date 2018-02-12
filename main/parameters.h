@@ -9,7 +9,7 @@
 
 #define NAME_PUMP_A "P1"
 #define NAME_PUMP_B "P2"
-#define NAME_FAN "Fan"
+#define NAME_FAN "Fans"
 #define NAME_SOLENOID "Flow"
 
 #define PIN_RELAY1_SOLENOID  8
@@ -36,12 +36,16 @@
 
 // ----- RUNNING PARAMETERS -----
 // -- This is the daily watering alarm
-#define ALARM_DAILY_HOUR 10
-#define ALARM_DAILY_MINUTE 45
+#define ALARM_DAILY_HOUR 16
+#define ALARM_DAILY_MINUTE 03
 
 // -- How many minutes the pumps must run
 #define RUNTIME_SECONDS_PUMP_A 12
 #define RUNTIME_SECONDS_PUMP_B 8
+
+// -- Disabling any pumps? (1 = disable)
+#define PUMP_DISABLE_A 0
+#define PUMP_DISABLE_B 0
 
 // -- If the soil is at this percentage of dryness, the alarm is permitted to start watering
 #define DRY_SOIL_THRESHOLD_PERCENT 30
@@ -49,8 +53,13 @@
 // -- If the soil is at this percentage of dryness, pumps are started in spite of alarm time
 #define DRY_SOIL_TRIGGER_PERCENT 20
 
-// -- If the temperature reaches this much, start the fans
-#define START_FAN_AT_DEGREES 40
+// -- Start the fans if temperature or humidity is higher than this:
+#define START_FAN_AT_DEGREES 31
+#define START_FAN_AT_HUMID 80
+
+// -- Stop the fans if the temperature or humidity is lower than this:
+#define STOP_FAN_AT_DEGREES 29
+#define STOP_FAN_AT_HUMID 60
 
 // -- If the temperature gets this low, do not start pumps, as they may be iced up.
 #define PUMP_ICE_PROTECTION_DEGREES 2
